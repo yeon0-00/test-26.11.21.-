@@ -115,17 +115,17 @@
 
       <!-- 우측 점수 현황 및 관리자 버튼 -->
       <div class="flex items-center gap-2.5 ml-auto sm:ml-0">
-        <!-- 학생 정보 배지 (입장 후 표시) -->
+        <!-- 개인정보 비노출 신원 확인 배지 (입장 후 표시) -->
         <button
           id="headerStudentBadge"
           type="button"
-          onclick="editStudentInfo()"
-          title="클릭하여 반·번호·이름 수정"
-          class="hidden bg-brand-50 hover:bg-brand-100 text-brand-800 px-3 py-1.5 rounded-xl border border-brand-200 text-xs sm:text-sm font-bold transition flex items-center gap-1.5"
+          onclick="switchStudentSession()"
+          title="개인정보는 화면에 표시되지 않습니다. 다른 학생이 이용할 경우 클릭하세요."
+          class="hidden bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-xl border border-emerald-200 text-xs sm:text-sm font-bold transition flex items-center gap-1.5"
         >
-          <span>👤</span>
-          <span id="headerStudentText">0반 0번 홍길동</span>
-          <span class="text-[10px] text-brand-500 underline ml-0.5">수정</span>
+          <span>🛡️</span>
+          <span>신원 확인됨 (개인정보 비노출)</span>
+          <span class="text-[10px] text-emerald-600 underline ml-0.5">학생 전환</span>
         </button>
 
         <div class="bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200 flex items-center gap-2">
@@ -179,85 +179,75 @@
   <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     <!-- ============================================================ -->
-    <!-- [입장 화면] 메인 화면 반 · 번호 · 이름 입력 섹션              -->
+    <!-- [입장 화면] 신원 확인 (학번 · 이름 입력 - 화면 비노출 보안 처리) -->
     <!-- ============================================================ -->
     <section id="studentEntryView" class="max-w-lg mx-auto my-4 sm:my-8 animate-fade-up">
       <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-md">
         <div class="text-center mb-6">
           <div class="w-16 h-16 rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 flex items-center justify-center mx-auto mb-4 text-3xl shadow-xs">
-            🏫
+            🛡️
           </div>
           <span class="inline-block px-3 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200 text-xs font-extrabold mb-2">
-            중학교 2학년 도덕 · 학생 출석 및 점수 기록
+            중학교 2학년 도덕 · 학습자 신원 확인
           </span>
           <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">
             국가에 대한 의무를 지켜야 하는 이유
           </h2>
           <p class="text-xs sm:text-sm text-slate-500 mt-1.5 leading-relaxed">
-            학습 결과와 점수가 선생님의 스프레드시트에 기록됩니다.<br/>
-            본인의 <strong>반, 번호, 이름</strong>을 정확히 입력하고 시작해 주세요.
+            본인의 <strong>학번</strong>과 <strong>이름</strong>을 입력하면 학습 기록이 안전하게 저장되며,<br/>
+            재접속 시 동일 학생 여부를 확인해 기존 점수와 통과 상태를 이어받습니다.
           </p>
         </div>
 
-        <div class="space-y-4">
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label for="inputClassNum" class="block text-xs font-bold text-slate-700 mb-1.5">반</label>
-              <div class="relative">
-                <input
-                  id="inputClassNum"
-                  type="text"
-                  inputmode="numeric"
-                  maxlength="4"
-                  placeholder="예: 3"
-                  onkeydown="if(event.key === 'Enter') document.getElementById('inputStudentNum').focus()"
-                  class="w-full px-4 py-3 pr-9 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-base font-bold text-slate-900"
-                />
-                <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">반</span>
-              </div>
-            </div>
+        <!-- 개인정보 비노출 보안 안내 박스 -->
+        <div class="mb-5 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-2.5 text-xs text-slate-600 leading-relaxed">
+          <span class="text-base leading-none mt-0.5">🔒</span>
+          <div>
+            <strong class="text-slate-800">개인정보 철저 보호:</strong> 입력하신 학번과 이름은 웹 앱 화면 어디에도 표시되지 않으며, 교사용 데이터베이스 기록 및 본인 확인 용도로만 사용됩니다.
+          </div>
+        </div>
 
-            <div>
-              <label for="inputStudentNum" class="block text-xs font-bold text-slate-700 mb-1.5">번호</label>
-              <div class="relative">
-                <input
-                  id="inputStudentNum"
-                  type="text"
-                  inputmode="numeric"
-                  maxlength="4"
-                  placeholder="예: 15"
-                  onkeydown="if(event.key === 'Enter') document.getElementById('inputStudentName').focus()"
-                  class="w-full px-4 py-3 pr-9 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-base font-bold text-slate-900"
-                />
-                <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">번</span>
-              </div>
-            </div>
+        <form onsubmit="event.preventDefault(); submitStudentEntry();" autocomplete="off" class="space-y-4">
+          <div>
+            <label for="inputStudentId" class="block text-xs font-bold text-slate-700 mb-1.5">학번 (학년·반·번호)</label>
+            <input
+              id="inputStudentId"
+              name="student_id_field"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              maxlength="10"
+              placeholder="예: 20315 (2학년 3반 15번)"
+              onkeydown="if(event.key === 'Enter'){ event.preventDefault(); document.getElementById('inputStudentName').focus(); }"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-base font-bold text-slate-900"
+            />
           </div>
 
           <div>
             <label for="inputStudentName" class="block text-xs font-bold text-slate-700 mb-1.5">이름</label>
             <input
               id="inputStudentName"
+              name="student_name_field"
               type="text"
+              autocomplete="off"
               maxlength="20"
-              placeholder="이름을 입력하세요 (예: 김도덕)"
-              onkeydown="if(event.key === 'Enter') submitStudentEntry()"
+              placeholder="본인 이름을 입력하세요"
               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-base font-bold text-slate-900"
             />
           </div>
 
           <p id="entryErrorMsg" class="hidden text-xs font-bold text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-3.5 py-2.5">
-            반, 번호, 이름을 모두 입력해 주세요!
+            학번과 이름을 모두 입력해 주세요!
           </p>
 
           <button
-            type="button"
-            onclick="submitStudentEntry()"
+            id="entrySubmitBtn"
+            type="submit"
             class="w-full py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white font-extrabold text-base transition shadow-md flex items-center justify-center gap-2 mt-2"
           >
-            <span>🚀 학습 시작하기</span>
+            <span>🔐 신원 확인 후 학습 시작하기</span>
           </button>
-        </div>
+        </form>
       </div>
     </section>
 
@@ -643,18 +633,11 @@
 
         <!-- 구글 스프레드시트 연동 설정 패널 -->
         <div class="p-4 rounded-2xl bg-sky-50/70 border border-sky-200 space-y-3">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <h4 class="text-sm font-extrabold text-slate-900">📊 구글 스프레드시트 학생 점수 수집 설정</h4>
-              <p class="text-xs text-slate-600 mt-0.5">구글 스프레드시트 Apps Script 웹 앱 URL을 연결하면 학생별 점수가 자동 기록됩니다.</p>
-            </div>
-            <button
-              type="button"
-              onclick="exportRecordsToCSV()"
-              class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shrink-0 transition"
-            >
-              📥 CSV 다운로드
-            </button>
+          <div>
+            <h4 class="text-sm font-extrabold text-slate-900">📊 구글 스프레드시트 데이터베이스 연결 설정</h4>
+            <p class="text-xs text-slate-600 mt-0.5">
+              선생님의 시트(<strong>모듈2 시트 연결하기 연습(11.22.)</strong>)의 A~D열(이름, 학번, 퀴즈점수, 통과여부)과 직접 연동됩니다. 학생 개인정보는 웹 앱 화면에 노출되지 않습니다.
+            </p>
           </div>
 
           <div class="flex flex-col sm:flex-row gap-2">
@@ -673,47 +656,89 @@
             </button>
           </div>
 
-          <details class="bg-white rounded-xl border border-sky-200 p-3 text-xs text-slate-700">
+          <details open class="bg-white rounded-xl border border-sky-200 p-3 text-xs text-slate-700">
             <summary class="font-bold text-brand-700 cursor-pointer select-none">
-              📘 구글 스프레드시트 연동 방법 보기 (1분 설정 · 코드 복사)
+              📘 선생님의 시트 전용 Apps Script 코드 복사하기 (시트 ID 자동 반영됨)
             </summary>
             <div class="mt-2.5 space-y-2 leading-relaxed">
-              <p><strong>1단계:</strong> 새 구글 스프레드시트를 열고 상단 메뉴 <strong>[확장 프로그램] → [Apps Script]</strong>를 클릭합니다.</p>
-              <p><strong>2단계:</strong> 기존 코드를 모두 지우고 아래 코드를 붙여넣은 뒤 저장합니다.</p>
+              <p><strong>1단계:</strong> 시트 상단 메뉴 <strong>[확장 프로그램] → [Apps Script]</strong>를 누릅니다.</p>
+              <p><strong>2단계:</strong> 아래 코드를 복사해 붙여넣고 저장(Ctrl+S)한 뒤 <strong>[배포] → [새 배포] → [웹 앱] → 액세스 권한: [모든 사용자]</strong>로 배포하세요.</p>
               <div class="relative">
-                <pre id="appsScriptCodePre" class="p-2.5 rounded-lg bg-slate-900 text-emerald-300 text-[11px] overflow-x-auto leading-normal">function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("학생점수현황")
-              || SpreadsheetApp.getActiveSpreadsheet().insertSheet("학생점수현황");
+                <pre id="appsScriptCodePre" class="p-2.5 rounded-lg bg-slate-900 text-emerald-300 text-[11px] overflow-x-auto leading-normal">var SPREADSHEET_ID = "1CN1bDkFEWKD25J9tCGpmiJh27AZXxQrn4JgJ8xC-D24";
+
+function getTargetSheet() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheets()[0];
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(["제출시각", "반", "번호", "이름", "점수", "정답수", "선택이론", "서술형답안"]);
+    sheet.appendRow(["이름", "학번", "퀴즈점수", "통과여부", "선택이론", "서술형답안", "최근기록시각"]);
   }
+  return sheet;
+}
+
+function doPost(e) {
+  var sheet = getTargetSheet();
   var data = JSON.parse(e.postData.contents);
+  var inputName = String(data.name || "").trim();
+  var inputId = String(data.studentId || "").trim();
   var rows = sheet.getDataRange().getValues();
   var targetRow = -1;
+
   for (var i = 1; i &lt; rows.length; i++) {
-    if (String(rows[i][1]) === String(data.classNum) &amp;&amp;
-        String(rows[i][2]) === String(data.studentNum) &amp;&amp;
-        String(rows[i][3]) === String(data.name)) {
+    if (String(rows[i][0]).trim() === inputName &amp;&amp; String(rows[i][1]).trim() === inputId) {
       targetRow = i + 1;
       break;
     }
   }
+
+  // 1) 재접속 학생 신원 확인 요청 (개인정보는 절대 반환하지 않고 점수와 통과여부만 반환)
+  if (data.action === "verify") {
+    var resultPayload = { exists: false, score: 0, passed: false, solvedIds: [], essayChoice: "" };
+    if (targetRow &gt; 0) {
+      var existingScore = Number(rows[targetRow - 1][2]) || 0;
+      var existingPass = String(rows[targetRow - 1][3] || "").indexOf("통과") === 0 &amp;&amp; String(rows[targetRow - 1][3]) !== "미통과";
+      var savedSolved = [];
+      try {
+        if (rows[targetRow - 1][7]) savedSolved = JSON.parse(rows[targetRow - 1][7]);
+      } catch (err) {}
+      resultPayload = {
+        exists: true,
+        score: existingScore,
+        passed: existingPass || existingScore &gt;= 90,
+        solvedIds: savedSolved,
+        essayChoice: String(rows[targetRow - 1][4] || "")
+      };
+    }
+    return ContentService.createTextOutput(JSON.stringify(resultPayload))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // 2) 학습 점수 및 통과여부 저장 (A열: 이름, B열: 학번, C열: 퀴즈점수, D열: 통과여부)
+  var score = Number(data.score) || 0;
+  var passText = score &gt;= 90 ? "통과" : "미통과";
   var rowValues = [
-    new Date().toLocaleString("ko-KR"),
-    data.classNum,
-    data.studentNum,
-    data.name,
-    data.score,
-    data.solvedCount + "/10",
+    inputName,
+    inputId,
+    score,
+    passText,
     data.essayChoice || "-",
-    data.essayText || "-"
+    data.essayText || "-",
+    new Date().toLocaleString("ko-KR"),
+    JSON.stringify(data.solvedIds || [])
   ];
+
   if (targetRow &gt; 0) {
+    // 기존 최고 점수 유지 또는 최신 점수 반영
+    var prevScore = Number(rows[targetRow - 1][2]) || 0;
+    if (prevScore &gt; score) {
+      rowValues[2] = prevScore;
+      rowValues[3] = prevScore &gt;= 90 ? "통과" : "미통과";
+    }
     sheet.getRange(targetRow, 1, 1, rowValues.length).setValues([rowValues]);
   } else {
     sheet.appendRow(rowValues);
   }
-  return ContentService.createTextOutput(JSON.stringify({ result: "success" }))
+
+  return ContentService.createTextOutput(JSON.stringify({ result: "success", passed: score &gt;= 90 }))
     .setMimeType(ContentService.MimeType.JSON);
 }</pre>
                 <button
@@ -724,7 +749,6 @@
                   📋 Apps Script 코드 복사하기
                 </button>
               </div>
-              <p><strong>3단계:</strong> 우측 상단 <strong>[배포] → [새 배포]</strong> → 유형 <strong>[웹 앱]</strong> 선택 → 액세스 권한을 <strong>[모든 사용자]</strong>로 설정 후 배포하면 나오는 <code>https://script.google.com/macros/s/.../exec</code> 주소를 위 입력창(또는 코드 상단 <code>DEFAULT_GOOGLE_SHEET_URL</code>)에 넣으세요!</p>
             </div>
           </details>
         </div>
@@ -964,11 +988,11 @@
 
     /**
      * 2. 애플리케이션 상태 관리 객체
+     * - 개인정보 보호 원칙: 학번·이름은 화면 DOM 및 알림창에 절대 렌더링하지 않음
      */
     const APP_STATE = {
-      student: null,                   // { classNum, studentNum, name } 입장한 학생 정보
+      student: null,                   // { studentId, name } 메모리 내 인증 세션 전용 (UI 렌더링 금지)
       sheetUrl: DEFAULT_GOOGLE_SHEET_URL, // 연결된 구글 스프레드시트 Apps Script URL
-      submissionLogs: [],              // 현재 세션 제출 기록 목록 (CSV 다운로드용)
       activeTab: 'quiz',               // 'quiz' | 'review'
       solvedIds: new Set(),            // 정답(만점)을 받은 문항 ID 집합
       selectedOptions: {},             // 객관식 문항별 현재 선택한 보기 인덱스
@@ -986,109 +1010,175 @@
     const UNLOCK_SCORE_THRESHOLD = 90;
 
     /**
-     * 메인 화면 학생 반·번호·이름 입력 및 입장 처리
+     * 메인 화면 학생 학번·이름 신원 확인 및 입장 처리
+     * - 입력 직후 입력창 값을 즉시 지워 화면·DOM에 개인정보가 남지 않도록 처리
+     * - 스프레드시트 연결 시 동일 학생 기존 기록(점수·통과여부)을 조회하여 복원
      */
-    function submitStudentEntry() {
-      const classInput = document.getElementById('inputClassNum');
-      const numInput = document.getElementById('inputStudentNum');
+    async function submitStudentEntry() {
+      const idInput = document.getElementById('inputStudentId');
       const nameInput = document.getElementById('inputStudentName');
       const errorMsg = document.getElementById('entryErrorMsg');
+      const submitBtn = document.getElementById('entrySubmitBtn');
 
-      const classNum = classInput.value.trim().replace(/반$/, '');
-      const studentNum = numInput.value.trim().replace(/번$/, '');
+      const studentId = idInput.value.trim();
       const name = nameInput.value.trim();
 
-      if (!classNum || !studentNum || !name) {
+      if (!studentId || !name) {
         errorMsg.classList.remove('hidden');
-        showToast("반, 번호, 이름을 모두 입력해 주세요!", "warning");
-        if (!classNum) classInput.focus();
-        else if (!studentNum) numInput.focus();
+        showToast("학번과 이름을 모두 입력해 주세요!", "warning");
+        if (!studentId) idInput.focus();
         else nameInput.focus();
         return;
       }
 
       errorMsg.classList.add('hidden');
-      APP_STATE.student = { classNum, studentNum, name };
 
-      // 헤더 학생 배지 업데이트
-      const badgeBtn = document.getElementById('headerStudentBadge');
-      const badgeText = document.getElementById('headerStudentText');
-      badgeText.textContent = `${classNum}반 ${studentNum}번 ${name}`;
-      badgeBtn.classList.remove('hidden');
+      // 개인정보 보호: 입력창의 텍스트를 즉시 비워 화면과 DOM에서 제거
+      idInput.value = '';
+      nameInput.value = '';
+
+      APP_STATE.student = { studentId, name };
+
+      // 이전 학생 세션의 풀이 상태 초기화 후 현재 학생 신원 확인 진행
+      APP_STATE.solvedIds.clear();
+      APP_STATE.selectedOptions = {};
+      APP_STATE.wrongAttempts = {};
+      APP_STATE.visibleHints.clear();
+      APP_STATE.essayChoice = '';
+      APP_STATE.essayText = '';
+      APP_STATE.essayAttemptedWrong = false;
+      APP_STATE.celebrationShown = false;
+
+      const targetUrl = (APP_STATE.sheetUrl || '').trim();
+      let isReturningStudent = false;
+
+      if (targetUrl) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>⏳ 데이터베이스 신원 확인 중...</span>';
+        try {
+          const response = await fetch(targetUrl, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'verify',
+              name: name,
+              studentId: studentId
+            })
+          });
+          const result = await response.json();
+          if (result && result.exists) {
+            isReturningStudent = true;
+            if (Array.isArray(result.solvedIds) && result.solvedIds.length > 0) {
+              result.solvedIds.forEach((id) => APP_STATE.solvedIds.add(Number(id)));
+            } else if (Number(result.score) > 0) {
+              const count = Math.min(QUIZ_DATA.length, Math.floor(Number(result.score) / 10));
+              for (let i = 1; i <= count; i++) {
+                APP_STATE.solvedIds.add(i);
+              }
+            }
+            if (result.essayChoice && result.essayChoice !== '-') {
+              APP_STATE.essayChoice = result.essayChoice;
+            }
+            if (getCurrentScore() >= UNLOCK_SCORE_THRESHOLD) {
+              APP_STATE.celebrationShown = true;
+            }
+          }
+        } catch (err) {
+          // 네트워크/CORS 환경에서도 신원 확인 후 정상 진행
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>🔐 신원 확인 후 학습 시작하기</span>';
+        }
+      }
+
+      // 헤더에는 개인정보 없이 '신원 확인됨' 상태만 표시
+      document.getElementById('headerStudentBadge').classList.remove('hidden');
+
+      renderQuizList();
+      updateGlobalUI();
 
       // 입장 화면 숨기고 현재 활성 탭 표시
       document.getElementById('studentEntryView').classList.add('hidden');
       switchTab(APP_STATE.activeTab);
 
-      showToast(`${classNum}반 ${studentNum}번 ${name} 학생, 환영합니다!`, "success");
-      syncScoreToSpreadsheet(false);
+      if (isReturningStudent) {
+        showToast(`기존 학습 기록이 확인되었습니다! (현재 ${getCurrentScore()}점)`, "success");
+      } else {
+        showToast("신원 확인이 완료되었습니다. 학습을 시작합니다!", "success");
+        syncScoreToSpreadsheet(false);
+      }
     }
 
     /**
-     * 학생 정보(반·번호·이름) 수정 화면으로 전환
+     * 공용 기기에서 다른 학생이 접속할 때 기존 세션을 완전히 초기화하고 입장 화면으로 전환
      */
-    function editStudentInfo() {
-      if (APP_STATE.student) {
-        document.getElementById('inputClassNum').value = APP_STATE.student.classNum;
-        document.getElementById('inputStudentNum').value = APP_STATE.student.studentNum;
-        document.getElementById('inputStudentName').value = APP_STATE.student.name;
-      }
+    function switchStudentSession() {
+      APP_STATE.student = null;
+      APP_STATE.solvedIds.clear();
+      APP_STATE.selectedOptions = {};
+      APP_STATE.wrongAttempts = {};
+      APP_STATE.visibleHints.clear();
+      APP_STATE.essayChoice = '';
+      APP_STATE.essayText = '';
+      APP_STATE.essayAttemptedWrong = false;
+      APP_STATE.celebrationShown = false;
+
+      document.getElementById('inputStudentId').value = '';
+      document.getElementById('inputStudentName').value = '';
+      document.getElementById('headerStudentBadge').classList.add('hidden');
       document.getElementById('quizSection').classList.add('hidden');
       document.getElementById('reviewSection').classList.add('hidden');
       document.getElementById('studentEntryView').classList.remove('hidden');
-      document.getElementById('inputStudentName').focus();
+
+      renderQuizList();
+      updateGlobalUI();
+      showToast("이전 학습자의 정보가 안전하게 비워졌습니다. 새 학번과 이름을 입력해 주세요.", "info");
+      document.getElementById('inputStudentId').focus();
     }
 
     /**
-     * 학생별 점수를 구글 스프레드시트 및 세션 기록에 전송
+     * 학생별 점수와 통과여부를 구글 스프레드시트 데이터베이스에 저장
+     * - 개인정보(이름·학번)는 전송 페이로드에만 포함되며 화면 UI에는 절대 표시하지 않음
      */
     async function syncScoreToSpreadsheet(isManual = false) {
       if (!APP_STATE.student) {
         if (isManual) {
-          showToast("먼저 반, 번호, 이름을 입력해 주세요!", "warning");
-          editStudentInfo();
+          showToast("먼저 학번과 이름을 입력해 신원 확인을 완료해 주세요!", "warning");
+          switchStudentSession();
         }
         return;
       }
 
-      const record = {
-        timestamp: new Date().toLocaleString('ko-KR'),
-        classNum: APP_STATE.student.classNum,
-        studentNum: APP_STATE.student.studentNum,
+      const currentScore = getCurrentScore();
+      const payload = {
+        action: 'save',
         name: APP_STATE.student.name,
-        score: getCurrentScore(),
-        solvedCount: APP_STATE.solvedIds.size,
+        studentId: APP_STATE.student.studentId,
+        score: currentScore,
+        passed: currentScore >= UNLOCK_SCORE_THRESHOLD,
+        solvedIds: Array.from(APP_STATE.solvedIds),
         essayChoice: APP_STATE.essayChoice || '-',
         essayText: (APP_STATE.essayText || '').trim() || '-'
       };
-
-      // 현재 세션 기록 갱신 (동일 학생이면 덮어쓰기)
-      const existingIdx = APP_STATE.submissionLogs.findIndex(
-        (r) => r.classNum === record.classNum && r.studentNum === record.studentNum && r.name === record.name
-      );
-      if (existingIdx >= 0) {
-        APP_STATE.submissionLogs[existingIdx] = record;
-      } else {
-        APP_STATE.submissionLogs.push(record);
-      }
 
       const syncBadge = document.getElementById('sheetSyncBadge');
       const targetUrl = (APP_STATE.sheetUrl || '').trim();
 
       if (!targetUrl) {
         if (syncBadge) {
-          syncBadge.textContent = `📝 ${record.classNum}반 ${record.studentNum}번 ${record.name} (${record.score}점 기록됨)`;
+          syncBadge.textContent = `🔒 로컬 세션 기록 중 (${currentScore}점 · 시트 URL 미연결)`;
           syncBadge.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200";
         }
         if (isManual) {
-          showToast(`${record.name} 학생의 점수(${record.score}점)가 저장되었습니다! (스프레드시트 URL 미연결 상태)`, "info");
+          showToast(`현재 점수(${currentScore}점)가 확인되었습니다. (관리자 모드에서 시트 URL을 연결하면 자동 저장됩니다)`, "info");
         }
         return;
       }
 
       try {
         if (syncBadge) {
-          syncBadge.textContent = "⏳ 스프레드시트 전송 중...";
+          syncBadge.textContent = "⏳ 데이터베이스 저장 중...";
           syncBadge.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700";
         }
 
@@ -1096,23 +1186,23 @@
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(record)
+          body: JSON.stringify(payload)
         });
 
         if (syncBadge) {
-          syncBadge.textContent = `✅ 스프레드시트 반영 완료 (${record.score}점)`;
+          syncBadge.textContent = `✅ 데이터베이스 저장 완료 (${currentScore}점)`;
           syncBadge.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
         }
         if (isManual) {
-          showToast(`${record.classNum}반 ${record.studentNum}번 ${record.name} 학생 점수(${record.score}점)가 스프레드시트로 전송되었습니다!`, "success");
+          showToast(`점수(${currentScore}점)와 통과 여부가 스프레드시트에 안전하게 저장되었습니다!`, "success");
         }
       } catch (err) {
         if (syncBadge) {
-          syncBadge.textContent = "⚠️ 전송 오류 (다시 시도해 주세요)";
+          syncBadge.textContent = "⚠️ 저장 오류 (다시 시도해 주세요)";
           syncBadge.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700";
         }
         if (isManual) {
-          showToast("스프레드시트 전송 중 네트워크 오류가 발생했습니다.", "warning");
+          showToast("데이터베이스 전송 중 네트워크 오류가 발생했습니다.", "warning");
         }
       }
     }
@@ -1136,16 +1226,17 @@
           mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
-            classNum: APP_STATE.student ? APP_STATE.student.classNum : "테스트",
-            studentNum: APP_STATE.student ? APP_STATE.student.studentNum : "0",
-            name: APP_STATE.student ? APP_STATE.student.name : "연결확인",
+            action: 'save',
+            name: APP_STATE.student ? APP_STATE.student.name : "연결테스트",
+            studentId: APP_STATE.student ? APP_STATE.student.studentId : "00000",
             score: getCurrentScore(),
-            solvedCount: APP_STATE.solvedIds.size,
+            passed: getCurrentScore() >= UNLOCK_SCORE_THRESHOLD,
+            solvedIds: Array.from(APP_STATE.solvedIds),
             essayChoice: APP_STATE.essayChoice || "-",
             essayText: APP_STATE.essayText || "스프레드시트 연결 테스트"
           })
         });
-        showToast("스프레드시트 URL이 연결되었습니다! 시트에서 '학생점수현황' 탭을 확인해 보세요.", "success");
+        showToast("스프레드시트 URL이 연결되었습니다! 시트 첫 번째 탭에 기록되는지 확인해 보세요.", "success");
       } catch (e) {
         showToast("URL 형식을 다시 확인해 주세요.", "warning");
       }
@@ -1169,38 +1260,6 @@
         showToast("복사에 실패했습니다. 코드를 직접 드래그하여 복사해 주세요.", "warning");
       }
       document.body.removeChild(textarea);
-    }
-
-    /**
-     * 관리자 패널: 현재 세션 학생 점수 엑셀(CSV) 파일 내보내기
-     */
-    function exportRecordsToCSV() {
-      if (APP_STATE.student) {
-        syncScoreToSpreadsheet(false);
-      }
-      const headers = ['제출시각', '반', '번호', '이름', '점수', '정답수(10문항)', '선택이론', '서술형답안'];
-      const rows = APP_STATE.submissionLogs.map((r) => [
-        `"${r.timestamp}"`,
-        `"${r.classNum}"`,
-        `"${r.studentNum}"`,
-        `"${r.name}"`,
-        r.score,
-        `"${r.solvedCount}/10"`,
-        `"${r.essayChoice}"`,
-        `"${(r.essayText || '').replace(/"/g, '""')}"`
-      ]);
-
-      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `중2도덕_학생점수현황_${new Date().toISOString().slice(0, 10)}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      showToast("학생 점수 스프레드시트(CSV) 파일이 다운로드되었습니다.", "success");
     }
 
     /**
