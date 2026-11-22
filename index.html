@@ -981,8 +981,8 @@ function doPost(e) {
         type: "essay",
         category: "서술형 탐구 평가 (10점)",
         question: "[서술형] ‘동의론’과 ‘혜택론’ 중 하나를 선택하고, 학생으로서 교칙을 지켜야 하는 이유를 자신의 입장에 맞게 서술하시오.",
-        hint: "아래에서 [동의론] 또는 [혜택론] 중 하나를 선택한 뒤, ‘학생’, ‘교칙’, 그리고 선택한 관점(‘동의론’ 또는 ‘혜택론’) 단어를 모두 포함하여 이유를 문장으로 작성해 보세요!",
-        wrongTip: "채점 기준 확인! 작성한 글 속에 ① ‘학생’ ② ‘교칙’ ③ ‘동의론’ 또는 ‘혜택론’ 세 가지 핵심어가 모두 들어가야 만점(10점)으로 인정됩니다."
+        hint: "1단계에서 [동의론] 또는 [혜택론]을 먼저 선택한 뒤, ‘학생’과 ‘교칙’을 포함하고 선택한 이론에 맞는 핵심 개념(‘동의’ 또는 ‘혜택’)을 넣어 이유를 작성해 보세요!",
+        wrongTip: "선택한 이론과 서술 내용이 일치해야 해요! [동의론]을 골랐다면 ‘동의’가, [혜택론]을 골랐다면 ‘혜택’이 문장에 들어가야 하며 ‘학생’과 ‘교칙’도 함께 포함되어야 합니다."
       }
     ];
 
@@ -1589,14 +1589,19 @@ function doPost(e) {
           </div>
         `;
       } else if (APP_STATE.essayAttemptedWrong) {
+        const requiredConcept = APP_STATE.essayChoice === '동의론'
+          ? '‘동의’(또는 ‘동의론’)'
+          : APP_STATE.essayChoice === '혜택론'
+          ? '‘혜택’(또는 ‘혜택론’)'
+          : '선택한 이론에 맞는 핵심어(‘동의’ 또는 ‘혜택’)';
         feedbackHtml = `
           <div class="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-300 text-amber-950 text-xs sm:text-sm space-y-2 animate-fade-up">
             <div class="font-extrabold text-amber-800">
-              🤔 조금만 더 보완해 볼까요? 모범 답안을 바로 알려주지 않고 힌트를 드릴게요!
+              🤔 선택한 이론에 맞는 핵심 개념이 빠졌거나 보완이 필요해요! 아래 힌트를 참고해 다시 작성해 보세요.
             </div>
             <div class="p-3 rounded-lg bg-white/90 border border-amber-200 space-y-1.5">
-              <p class="text-slate-800"><strong class="text-brand-700">💡 서술 힌트:</strong> ${item.hint}</p>
-              <p class="text-slate-700"><strong class="text-amber-700">🧭 작성 팁:</strong> “나는 <strong>학생</strong>으로서 <strong>동의론(또는 혜택론)</strong>의 관점에서 볼 때 ~하기 때문에 <strong>교칙</strong>을 지켜야 한다고 생각한다.” 형태로 문장을 완성해 보세요.</p>
+              <p class="text-slate-800"><strong class="text-brand-700">💡 서술 힌트:</strong> 현재 선택한 입장(<strong>${APP_STATE.essayChoice || '미선택'}</strong>)에 맞게 <strong>‘학생’</strong>, <strong>‘교칙’</strong>, 그리고 ${requiredConcept} 표현이 모두 들어가도록 문장을 다듬어 보세요.</p>
+              <p class="text-slate-700"><strong class="text-amber-700">🧭 작성 팁:</strong> “나는 <strong>학생</strong>으로서 ~에 <strong>동의(또는 혜택)</strong>하기 때문에 <strong>교칙</strong>을 지켜야 한다고 생각한다.”처럼 이유를 연결해 보세요.</p>
             </div>
           </div>
         `;
@@ -1739,8 +1744,9 @@ function doPost(e) {
 
     /**
      * 서술형 Q10 채점 로직
-     * - 채점 기준: '학생', '교칙', '동의론' 또는 '혜택론'이 들어가면 만점(10점)!
-     * - 누락 시 정답을 바로 알려주지 않고 힌트를 열어 재작성 유도
+     * - 1단계에서 '동의론' 또는 '혜택론'을 반드시 선택해야 함
+     * - 본문에 '학생'과 '교칙'이 모두 포함되어야 함
+     * - '동의론' 선택 시 본문에 '동의' 포함, '혜택론' 선택 시 본문에 '혜택' 포함 시 만점(10점)
      */
     function submitEssayAnswer() {
       if (APP_STATE.solvedIds.has(10)) return;
@@ -1748,25 +1754,23 @@ function doPost(e) {
       const text = (APP_STATE.essayText || '').trim();
       const chosenTheory = APP_STATE.essayChoice;
 
-      if (!chosenTheory && !text) {
-        showToast("먼저 동의론 또는 혜택론을 선택하고 이유를 서술해 주세요!", "info");
+      if (!chosenTheory) {
+        showToast("먼저 1단계에서 [동의론] 또는 [혜택론] 중 하나를 선택해 주세요!", "info");
+        return;
+      }
+
+      if (!text) {
+        showToast("2단계 입력창에 학생으로서 교칙을 지켜야 하는 이유를 서술해 주세요!", "info");
         return;
       }
 
       const hasStudentKeyword = text.includes('학생');
       const hasRuleKeyword = text.includes('교칙');
-      const hasTheoryKeyword =
-        text.includes('동의론') ||
-        text.includes('혜택론') ||
-        chosenTheory === '동의론' ||
-        chosenTheory === '혜택론';
+      const hasMatchedTheoryKeyword =
+        (chosenTheory === '동의론' && text.includes('동의')) ||
+        (chosenTheory === '혜택론' && text.includes('혜택'));
 
-      if (hasStudentKeyword && hasRuleKeyword && hasTheoryKeyword) {
-        // 선택한 이론 표기 보완
-        if (!APP_STATE.essayChoice) {
-          APP_STATE.essayChoice = text.includes('동의론') ? '동의론' : '혜택론';
-        }
-
+      if (hasStudentKeyword && hasRuleKeyword && hasMatchedTheoryKeyword) {
         APP_STATE.solvedIds.add(10);
         APP_STATE.essayAttemptedWrong = false;
         renderQuizList();
@@ -1933,7 +1937,7 @@ function doPost(e) {
           return `
             <div class="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200">
               <div class="font-bold text-slate-900">Q${idx + 1}. ${q.question}</div>
-              <div class="text-indigo-700 font-bold mt-1">채점 기준: ‘학생’, ‘교칙’, ‘동의론’ 또는 ‘혜택론’ 키워드 포함 시 만점(10점)</div>
+              <div class="text-indigo-700 font-bold mt-1">채점 기준: [동의론] 선택 시 ‘학생’·‘교칙’·‘동의’ 포함 / [혜택론] 선택 시 ‘학생’·‘교칙’·‘혜택’ 포함 시 만점(10점)</div>
             </div>
           `;
         }
